@@ -20,7 +20,7 @@
                             +
                         </button>
                     </div>
-                    
+
 
                     <!-- Modal Create -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -60,6 +60,8 @@
                         </thead>
 
                         <tbody>
+                            {{-- Variabel i untuk nomor --}}
+                            
                             @forelse ($kategoris as $kategori)
                                 <tr>
                                     <td>{{ ++$i }}</td>

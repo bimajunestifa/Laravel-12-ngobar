@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use SebastianBergmann\Type\TrueType;
 
 class KategoriStoreRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class KategoriStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return True;
     }
 
     /**
