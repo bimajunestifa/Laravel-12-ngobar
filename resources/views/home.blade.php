@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('content')
 <div class="container">
@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    {{ __('Selamat Mas!') }}   {{ Auth::user()->name }}
+                    {{ __('Selamat Datang, ') }} <strong>{{ Auth::user()->name }}</strong>!
                 </div>
             </div>
         </div>

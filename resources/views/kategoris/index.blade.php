@@ -5,7 +5,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Kategori') }}</div>
+                <div class="card-header">
+                    <h4 class="mb-0">Data Kategori Buku</h4>
+                </div>
                
                 <div class="card-body">
 
@@ -15,10 +17,10 @@
                         </div>
                     @endif
 
-                    <div class="grid gap-2 d-md-flex justify-content-md-end mb-3">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            +
-                        </button>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+                        <a href="{{ route('kategoris.create') }}" class="btn btn-primary">
+                            Tambah Kategori
+                        </a>
                     </div>
 
 
@@ -50,35 +52,37 @@
                         </div>
                     </div>
 
-                    <table class="table table-bordered table-striped mt-4">
-                        <thead>
+                    <table class="table table-bordered table-striped table-hover mt-4">
+                        <thead class="table-light">
                             <tr>
-                                <th width="80px">No</th>
-                                <th>Kategori</th>
-                                <th width="250px">Action</th>
+                                <th width="80px" class="text-center">No</th>
+                                <th>Nama Kategori</th>
+                                <th width="250px" class="text-center">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {{-- Variabel i untuk nomor --}}
-                            
+
                             @forelse ($kategoris as $kategori)
                                 <tr>
                                     <td>{{ ++$i }}</td>
                                     <td>{{ $kategori->kategori }}</td>
-                                    <td>
-                                        <form action="{{ route('kategoris.destroy', $kategori->id) }}" method="POST">
-                                            <a href="{{ route('kategoris.show', $kategori->id) }}" class="btn btn-info btn-sm">Show</a>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="{{ route('kategoris.show', $kategori->id) }}" class="btn btn-info btn-sm">Lihat</a>
                                             <a href="{{ route('kategoris.edit', $kategori->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin hapus?')">Delete</button>
-                                        </form>
+                                            <form action="{{ route('kategoris.destroy', $kategori->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori {{ $kategori->kategori }}?')" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">There are no data</td>
+                                    <td colspan="3" class="text-center text-muted">Belum ada data kategori</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -90,5 +94,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Pagination -->
+    {{ $kategoris->withQueryString()->links() }} 
 </div>
 @endsection
