@@ -10,4 +10,14 @@ class Kategori extends Model
    protected $fillable =[
     'kategori'
    ];
+   
+   /**
+    * Mendapatkan daftar kategori untuk dropdown
+    *
+    * @return array
+    */
+   public static function pluck()
+   {
+       return self::orderBy('kategori')->pluck('kategori', 'id')->toArray();
+   }
 }

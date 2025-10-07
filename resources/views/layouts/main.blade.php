@@ -44,6 +44,10 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('users.index') }}">Pengguna Sistem</a>
+                        </li>
+
                     </ul>
 
                     <!-- Right Side Of Navbar -->

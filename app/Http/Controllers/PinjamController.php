@@ -15,7 +15,11 @@ class PinjamController extends Controller
 
     public function create()
     {
-        return view('Pinjam.create');
+        $peminjams = \App\Models\Peminjam::pluck();
+        $books = \App\Models\Book::pluck();
+        $users = \App\Models\User::where('role', 'admin')->orWhere('role', 'user')->pluck('name', 'id');
+        
+        return view('Pinjam.create', compact('peminjams', 'books', 'users'));
     }
 
     public function store(Request $request)
@@ -42,7 +46,11 @@ class PinjamController extends Controller
     public function edit($id)
     {
         $pinjam = Pinjam::findOrFail($id);
-        return view('Pinjam.edit', compact('pinjam'));
+        $peminjams = \App\Models\Peminjam::pluck();
+        $books = \App\Models\Book::pluck();
+        $users = \App\Models\User::where('role', 'admin')->orWhere('role', 'user')->pluck('name', 'id');
+        
+        return view('Pinjam.edit', compact('pinjam', 'peminjams', 'books', 'users'));
     }
 
     public function update(Request $request, $id)

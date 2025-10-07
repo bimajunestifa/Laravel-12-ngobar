@@ -21,8 +21,12 @@
 
                         <div class="mb-3">
                             <label for="nama_pinjam" class="form-label"><strong>Nama Peminjam:</strong></label>
-                            <input type="text" name="nama_pinjam" id="nama_pinjam" class="form-control @error('nama_pinjam') is-invalid @enderror"
-                                   value="{{ old('nama_pinjam', $pinjam->nama_pinjam) }}" placeholder="Masukkan nama peminjam" required>
+                            <select name="nama_pinjam" id="nama_pinjam" class="form-control @error('nama_pinjam') is-invalid @enderror" required>
+                                <option value="">Pilih Peminjam</option>
+                                @foreach($peminjams as $id => $nama)
+                                    <option value="{{ $nama }}" {{ $pinjam->nama_pinjam == $nama ? 'selected' : '' }}>{{ $nama }}</option>
+                                @endforeach
+                            </select>
                             @error('nama_pinjam')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -48,8 +52,12 @@
 
                         <div class="mb-3">
                             <label for="judul_buku" class="form-label"><strong>Judul Buku:</strong></label>
-                            <input type="text" name="judul_buku" id="judul_buku" class="form-control @error('judul_buku') is-invalid @enderror"
-                                   value="{{ old('judul_buku', $pinjam->judul_buku) }}" placeholder="Masukkan judul buku" required>
+                            <select name="judul_buku" id="judul_buku" class="form-control @error('judul_buku') is-invalid @enderror" required>
+                                <option value="">Pilih Buku</option>
+                                @foreach($books as $id => $judul)
+                                    <option value="{{ $judul }}" {{ $pinjam->judul_buku == $judul ? 'selected' : '' }}>{{ $judul }}</option>
+                                @endforeach
+                            </select>
                             @error('judul_buku')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -57,8 +65,12 @@
 
                         <div class="mb-3">
                             <label for="petugas" class="form-label"><strong>Petugas:</strong></label>
-                            <input type="text" name="petugas" id="petugas" class="form-control @error('petugas') is-invalid @enderror"
-                                   value="{{ old('petugas', $pinjam->petugas) }}" placeholder="Masukkan nama petugas" required>
+                            <select name="petugas" id="petugas" class="form-control @error('petugas') is-invalid @enderror" required>
+                                <option value="">Pilih Petugas</option>
+                                @foreach($users as $id => $name)
+                                    <option value="{{ $name }}" {{ $pinjam->petugas == $name ? 'selected' : '' }}>{{ $name }}</option>
+                                @endforeach
+                            </select>
                             @error('petugas')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

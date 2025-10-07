@@ -23,6 +23,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (auth()->user()->role === 'siswa') {
+            return redirect()->route('siswa.dashboard');
+        }
+        
         return view('home');
     }
 }
