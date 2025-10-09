@@ -2,65 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Peminjam;
 use Illuminate\Http\Request;
+use App\Models\Peminjam;
 
 class PeminjamController extends Controller
 {
     public function index()
     {
-        $peminjams = Peminjam::all();
-        return view('Peminjam.index', compact('peminjams'));
-    }
-
-    public function create()
-    {
-        return view('Peminjam.create');
+        $peminjams = Peminjam::latest()->get();
+        return view('peminjam.index', compact('peminjams'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nisn' => 'required',
-            'nama' => 'required',
-            'kelas' => 'required',
-            'no_hp' => 'required',
-            'jk' => 'nullable|in:L,P',
+        // validasi
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'kelas' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:20',
+            'jk' => 'required|string|max:20',
         ]);
 
-        Peminjam::create($validated);
-
-        return redirect()->route('peminjam.index');
-    }
-
-    public function edit($id)
-    {
-        $peminjam = Peminjam::findOrFail($id);
-        return view('Peminjam.edit', compact('peminjam'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $peminjam = Peminjam::findOrFail($id);
-
-        $validated = $request->validate([
-            'nisn' => 'required',
-            'nama' => 'required',
-            'kelas' => 'required',
-            'no_hp' => 'required',
-            'jk' => 'nullable|in:L,P',
+        // simpan data
+        Peminjam::create([
+            'nama' => $request->nama,
+            'kelas' => $request->kelas,
+            'no_hp' => $request->no_hp,
+            'jk' => $request->jk,
         ]);
 
-        $peminjam->update($validated);
-
-        return redirect()->route('peminjam.index');
-    }
-
-    public function destroy($id)
-    {
-        $peminjam = Peminjam::findOrFail($id);
-        $peminjam->delete();
-
-        return redirect()->route('peminjam.index');
+        return redirect()->route('peminjam.index')->with('success', 'Data peminjam berhasil disimpan!');
     }
 }

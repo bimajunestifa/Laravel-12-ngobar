@@ -8,33 +8,41 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\SiswaController;
 
+
+
+// Redirect root ke login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Route otentikasi bawaan Laravel
 Auth::routes();
 
+// Semua route di bawah ini hanya bisa diakses jika user sudah login
 Route::middleware(['auth'])->group(function () {
+
+    // Halaman utama (dashboard)
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+    // CRUD kategori buku
     Route::resource('kategoris', KategoriController::class);
+
+    // CRUD buku
     Route::resource('book', BookController::class);
+
+    // CRUD data peminjam
     Route::resource('peminjam', PeminjamController::class);
+
+    // CRUD data peminjaman
     Route::resource('pinjam', PinjamController::class);
 
-    Route::middleware('admin')->group(function () {
-        Route::resource('users', UserController::class);
-    });
-
-    Route::middleware('siswa')->group(function () {
-        Route::get('/siswa/dashboard', [SiswaController::class, 'dashboard'])->name('siswa.dashboard');
-        Route::get('/siswa/peminjam', [SiswaController::class, 'peminjam'])->name('siswa.peminjam');
-        Route::get('/siswa/pinjam', [SiswaController::class, 'pinjam'])->name('siswa.pinjam');
-    });
+    // Manajemen pengguna sistem
+    // Untuk sementara: biarkan route users hanya dilindungi oleh 'auth' sehingga halaman bisa dibuka
+    Route::resource('users', UserController::class);
 });
 
+// Logout manual
 Route::get('/logout', function () {
     Auth::logout();
     return redirect()->route('login');

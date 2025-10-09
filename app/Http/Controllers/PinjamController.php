@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pinjam;
+use App\Models\Book;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PinjamController extends Controller
@@ -10,16 +12,14 @@ class PinjamController extends Controller
     public function index()
     {
         $pinjams = Pinjam::all();
-        return view('Pinjam.index', compact('pinjams'));
+        $buku = Book::all();
+        $users = User::where('role', 'admin')->orWhere('role', 'petugas')->get();
+        return view('Pinjam.index', compact('pinjams', 'buku', 'users'));
     }
 
     public function create()
     {
-        $peminjams = \App\Models\Peminjam::pluck();
-        $books = \App\Models\Book::pluck();
-        $users = \App\Models\User::where('role', 'admin')->orWhere('role', 'user')->pluck('name', 'id');
-        
-        return view('Pinjam.create', compact('peminjams', 'books', 'users'));
+        return view('Pinjam.create');
     }
 
     public function store(Request $request)
@@ -28,11 +28,22 @@ class PinjamController extends Controller
             'nama_pinjam' => 'required',
             'tgl_pinjam' => 'required|date',
             'tgl_kembali' => 'required|date',
-            'judul_buku' => 'required',
-            'petugas' => 'required',
+            'buku_id' => 'required|exists:books,id',
+            'petugas_id' => 'required|exists:users,id',
         ]);
-
-        Pinjam::create($validated);
+        
+        // Ambil data buku dan petugas
+        $buku = Book::findOrFail($request->buku_id);
+        $petugas = User::findOrFail($request->petugas_id);
+        
+        // Buat data pinjam dengan judul_buku dan petugas
+        Pinjam::create([
+            'nama_pinjam' => $validated['nama_pinjam'],
+            'tgl_pinjam' => $validated['tgl_pinjam'],
+            'tgl_kembali' => $validated['tgl_kembali'],
+            'judul_buku' => $buku->judul_buku,
+            'petugas' => $petugas->name,
+        ]);
 
         return redirect()->route('pinjam.index')->with('success', 'Data pinjam berhasil ditambahkan');
     }
@@ -46,11 +57,7 @@ class PinjamController extends Controller
     public function edit($id)
     {
         $pinjam = Pinjam::findOrFail($id);
-        $peminjams = \App\Models\Peminjam::pluck();
-        $books = \App\Models\Book::pluck();
-        $users = \App\Models\User::where('role', 'admin')->orWhere('role', 'user')->pluck('name', 'id');
-        
-        return view('Pinjam.edit', compact('pinjam', 'peminjams', 'books', 'users'));
+        return view('Pinjam.edit', compact('pinjam'));
     }
 
     public function update(Request $request, $id)
@@ -61,11 +68,22 @@ class PinjamController extends Controller
             'nama_pinjam' => 'required',
             'tgl_pinjam' => 'required|date',
             'tgl_kembali' => 'required|date',
-            'judul_buku' => 'required',
-            'petugas' => 'required',
+            'buku_id' => 'required|exists:books,id',
+            'petugas_id' => 'required|exists:users,id',
         ]);
 
-        $pinjam->update($validated);
+        // Ambil data buku dan petugas
+        $buku = Book::findOrFail($request->buku_id);
+        $petugas = User::findOrFail($request->petugas_id);
+        
+        // Update data pinjam dengan judul_buku dan petugas
+        $pinjam->update([
+            'nama_pinjam' => $validated['nama_pinjam'],
+            'tgl_pinjam' => $validated['tgl_pinjam'],
+            'tgl_kembali' => $validated['tgl_kembali'],
+            'judul_buku' => $buku->judul_buku,
+            'petugas' => $petugas->name,
+        ]);
 
         return redirect()->route('pinjam.index')->with('success', 'Data pinjam berhasil diupdate');
     }

@@ -6,19 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        // Tidak perlu melakukan perubahan apapun
+        Schema::table('peminjams', function (Blueprint $table) {
+            $table->string('no_hp')->after('kelas')->nullable();
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        // Tidak perlu melakukan perubahan apapun
+        Schema::table('peminjams', function (Blueprint $table) {
+            $table->dropColumn('no_hp');
+        });
     }
 };

@@ -9,23 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
-{
-    Schema::create('books', function (Blueprint $table) {
-        $table->id();
-        $table->string('judul_buku');
-        $table->string('penerbit');
-        $table->string('kategori');
-        $table->timestamps();
-    });
-}
-
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('role')->nullable()->after('password');
+        });
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
+        });
     }
 };

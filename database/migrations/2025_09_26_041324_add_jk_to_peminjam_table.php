@@ -11,11 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('peminjam', function (Blueprint $table) {
-            if (!Schema::hasColumn('peminjam', 'jk')) {
-                $table->enum('jk', ['L', 'P'])->nullable()->after('no_hp');
-            }
-        });
+        // Tidak perlu melakukan perubahan apapun
     }
 
     /**
@@ -23,10 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('peminjam', function (Blueprint $table) {
-            if (Schema::hasColumn('peminjam', 'jk')) {
-                $table->dropColumn('jk');
-            }
-        });
+        // Tidak perlu melakukan perubahan apapun
     }
 };

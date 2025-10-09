@@ -11,14 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('peminjam', function (Blueprint $table) {
-            $table->id();
-            $table->string('nisn');
-            $table->string('nama');
-            $table->string('kelas');
-            $table->string('no_hp');
-            $table->timestamps();
-        });
+        // Tidak perlu melakukan perubahan apapun
     }
 
     /**
@@ -26,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('peminjam');
+        // Tidak perlu melakukan perubahan apapun
     }
 };

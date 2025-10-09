@@ -13,12 +13,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::orderBy('role')->get();
         return view('users.index', compact('users'));
     }
 
     /**
-     * Form untuk tambah pengguna.
+     * Tampilkan form untuk membuat pengguna baru.
      */
     public function create()
     {
@@ -30,35 +30,47 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input
-        $rules = [
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'role'     => 'required|in:admin,petugas,siswa',
-        ];
-
-        // Jika role siswa, maka NIS wajib diisi
-        if ($request->role === 'siswa') {
-            $rules['nis'] = 'required|string|max:20|unique:users,nis';
-        }
-
-        $validated = $request->validate($rules);
-
-        // Simpan data ke database
-        User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role'     => $validated['role'],
-            'nis'      => $validated['role'] === 'siswa' ? $validated['nis'] : null,
+        $validated = $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'role'  => 'required|string|in:admin,petugas,siswa',
+            'nis'   => 'nullable|string|unique:users,nis',
+            'password' => 'nullable|string|min:6', // hanya dipakai kalau bukan siswa
         ]);
 
-        return redirect()->route('users.index')->with('success', 'Akun pengguna berhasil dibuat.');
+        if ($validated['role'] === 'siswa') {
+            if (empty($validated['nis'])) {
+                return back()
+                    ->withErrors(['nis' => 'NIS wajib diisi untuk siswa'])
+                    ->withInput();
+            }
+            $validated['password'] = Hash::make($validated['nis']);
+        } else {
+            if (empty($validated['password'])) {
+                return back()
+                    ->withErrors(['password' => 'Password wajib diisi untuk admin/petugas'])
+                    ->withInput();
+            }
+            $validated['password'] = Hash::make($validated['password']);
+        }
+
+        User::create($validated);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     /**
-     * Form edit pengguna.
+     * Tampilkan detail pengguna.
+     */
+    public function show(User $user)
+    {
+        return view('users.show', compact('user'));
+    }
+
+    /**
+     * Tampilkan form untuk edit pengguna.
      */
     public function edit(User $user)
     {
@@ -66,40 +78,42 @@ class UserController extends Controller
     }
 
     /**
-     * Update pengguna.
+     * Update data pengguna.
      */
     public function update(Request $request, User $user)
     {
         $rules = [
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $user->id,
-            'role'     => 'required|in:admin,petugas,siswa',
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role'  => 'required|string|in:admin,petugas,siswa',
+            'nis'   => 'nullable|string|unique:users,nis,' . $user->id,
+            'password' => 'nullable|string|min:6',
         ];
-
-        if ($request->role === 'siswa') {
-            $rules['nis'] = 'required|string|max:20|unique:users,nis,' . $user->id;
-        }
-
-        if ($request->filled('password')) {
-            $rules['password'] = 'string|min:6';
-        }
 
         $validated = $request->validate($rules);
 
-        $data = [
-            'name'  => $validated['name'],
-            'email' => $validated['email'],
-            'role'  => $validated['role'],
-            'nis'   => $validated['role'] === 'siswa' ? $validated['nis'] : null,
-        ];
-
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($validated['password']);
+        if ($validated['role'] === 'siswa') {
+            if (empty($validated['nis'])) {
+                return back()
+                    ->withErrors(['nis' => 'NIS wajib diisi untuk siswa'])
+                    ->withInput();
+            }
+            if (!empty($validated['nis'])) {
+                $validated['password'] = Hash::make($validated['nis']);
+            }
+        } else {
+            if (!empty($validated['password'])) {
+                $validated['password'] = Hash::make($validated['password']);
+            } else {
+                unset($validated['password']); // jangan update password kalau kosong
+            }
         }
 
-        $user->update($data);
+        $user->update($validated);
 
-        return redirect()->route('users.index')->with('success', 'Pengguna berhasil diperbarui.');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'Pengguna berhasil diperbarui.');
     }
 
     /**
@@ -108,6 +122,9 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'Pengguna berhasil dihapus.');
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'Pengguna berhasil dihapus.');
     }
 }

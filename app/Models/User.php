@@ -9,16 +9,6 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-    
-    /**
-     * Mendapatkan daftar user untuk dropdown
-     *
-     * @return array
-     */
-    public static function pluck()
-    {
-        return self::orderBy('name')->pluck('name', 'id')->toArray();
-    }
 
     /**
      * Kolom yang boleh diisi secara mass-assignment.

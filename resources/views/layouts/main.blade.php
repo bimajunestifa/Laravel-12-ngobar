@@ -32,22 +32,52 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="{{ route('kategoris.index') }}">Kategoris</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('book.*') ? 'active' : '' }}" href="{{ route('book.index') }}">Buku</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">Peminjam</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('users.index') }}">Pengguna Sistem</a>
-                        </li>
+                        @auth
+                            @php $role = Auth::user()->role ?? null; @endphp
 
+                            {{-- For siswa: only show Peminjam and Pinjam --}}
+                            @if($role === 'siswa')
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">Peminjam</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
+                                </li>
+
+                            {{-- For petugas: show everything except Pengguna Sistem --}}
+                            @elseif($role === 'petugas')
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="{{ route('kategoris.index') }}">Kategoris</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('book.*') ? 'active' : '' }}" href="{{ route('book.index') }}">Buku</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">Peminjam</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
+                                </li>
+
+                            {{-- For admin (and default): show all links --}}
+                            @else
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="{{ route('kategoris.index') }}">Kategoris</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('book.*') ? 'active' : '' }}" href="{{ route('book.index') }}">Buku</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">Peminjam</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">Pengguna Sistem</a>
+                                </li>
+                            @endif
+                        @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->

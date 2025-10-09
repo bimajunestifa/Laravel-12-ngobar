@@ -14,14 +14,4 @@ class Book extends Model
         'penerbit',
         'kategori',
     ];
-    
-    /**
-     * Mendapatkan daftar buku untuk dropdown
-     *
-     * @return array
-     */
-    public static function pluck()
-    {
-        return self::orderBy('judul_buku')->pluck('judul_buku', 'id')->toArray();
-    }
 }

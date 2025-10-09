@@ -9,16 +9,12 @@ class Peminjam extends Model
 {
     use HasFactory;
 
-    protected $table = 'peminjam';
-    protected $fillable = ['nisn', 'nama', 'kelas', 'no_hp', 'jk'];
-    
-    /**
-     * Mendapatkan daftar peminjam untuk dropdown
-     *
-     * @return array
-     */
-    public static function pluck()
-    {
-        return self::orderBy('nama')->pluck('nama', 'id')->toArray();
-    }
+    protected $table = 'peminjams'; // pastikan nama tabel sama
+
+    protected $fillable = [
+        'nama',
+        'kelas',
+        'no_hp',
+        'jk',
+    ];
 }

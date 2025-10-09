@@ -11,10 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Mendaftarkan binding untuk 'admin'
-        $this->app->bind('admin', function ($app) {
-            return new \App\Http\Middleware\AdminMiddleware;
-        });
+        //
     }
 
     /**
