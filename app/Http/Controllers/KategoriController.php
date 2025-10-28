@@ -23,9 +23,9 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        // $kategoris = Kategori::latest()->paginate(5);
-        // return view('kategoris.index', compact('kategoris'))
-        //     ->with('i', (request()->input('page', 1) - 1) * 5);
+        $kategoris = Kategori::latest()->paginate(5);
+        return view('kategoris.index', compact('kategoris'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**
