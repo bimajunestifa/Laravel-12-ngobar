@@ -52,21 +52,27 @@
                  </div>
 
                  <div class="mt-3">
-                    <label for="judul_buku" class="form-label"><strong>Judul Buku:</strong></label>
-                    <input type="text" name="judul_buku"
-                           class="form-control @error('judul_buku') is-invalid @enderror"
-                           id="judul_buku" placeholder="Masukkan judul buku" required>
-                    @error('judul_buku')
+                    <label for="buku_id" class="form-label"><strong>Judul Buku:</strong></label>
+                    <select name="buku_id" class="form-control @error('buku_id') is-invalid @enderror" id="buku_id" required>
+                        <option value="">-- Pilih Buku --</option>
+                        @foreach ($buku as $b)
+                            <option value="{{ $b->id }}">{{ $b->judul_buku }}</option>
+                        @endforeach
+                    </select>
+                    @error('buku_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                  </div>
 
                  <div class="mt-3">
-                    <label for="petugas" class="form-label"><strong>Petugas:</strong></label>
-                    <input type="text" name="petugas"
-                           class="form-control @error('petugas') is-invalid @enderror"
-                           id="petugas" placeholder="Masukkan nama petugas" required>
-                    @error('petugas')
+                    <label for="petugas_id" class="form-label"><strong>Petugas:</strong></label>
+                    <select name="petugas_id" class="form-control @error('petugas_id') is-invalid @enderror" id="petugas_id" required>
+                        <option value="">-- Pilih Petugas/Admin --</option>
+                        @foreach ($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('petugas_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                  </div>

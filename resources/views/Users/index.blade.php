@@ -5,200 +5,214 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card shadow">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4>Data Pengguna Sistem</h4>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                        + Tambah Pengguna
+                <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                    <h4 class="mb-0">Data Pengguna Sistem</h4>
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalTambahUser">
+                        <i class="bi bi-plus-circle"></i> Tambah Pengguna
                     </button>
                 </div>
 
-                {{-- Pesan sukses --}}
-                @if(session('success'))
-                    <div class="alert alert-success m-3">{{ session('success') }}</div>
-                @endif
+                <div class="card-body">
+                    @if (session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
 
-                {{-- Pesan error --}}
-                @if($errors->any())
-                    <div class="alert alert-danger m-3">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                <table class="table table-bordered table-hover align-middle mb-0">
-                    <thead class="table-light text-center">
-                        <tr>
-                            <th style="width: 50px;">No</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>NIS</th>
-                            <th style="width: 150px;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($users as $user)
-                        <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ ucfirst($user->role) }}</td>
-                            <td>{{ $user->nis ?? '-' }}</td>
-                            <td class="text-center">
-                                {{-- Tombol Edit --}}
-                                <button class="btn btn-warning btn-sm" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#editUserModal{{ $user->id }}">
-                                    Edit
-                                </button>
-
-                                {{-- Tombol Hapus --}}
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus pengguna ini?')">
+                    <!-- Modal Tambah User -->
+                    <div class="modal fade" id="modalTambahUser" tabindex="-1" aria-labelledby="modalTambahUserLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalTambahUserLabel">Tambah Pengguna Baru</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('users.store') }}" method="POST">
                                     @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-
-                        {{-- Modal Edit Pengguna --}}
-                        <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <form method="POST" action="{{ route('users.update', $user->id) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">Edit Pengguna</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Nama</label>
+                                            <input type="text" name="name" id="name"
+                                                class="form-control @error('name') is-invalid @enderror" 
+                                                value="{{ old('name') }}" required>
+                                            @error('name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label>Nama</label>
-                                                <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label>Email</label>
-                                                <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label>Password (Kosongkan jika tidak diubah)</label>
-                                                <input type="password" name="password" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label>Role</label>
-                                                <select name="role" class="form-select roleSelectEdit" data-target="nisFieldEdit{{ $user->id }}" required>
-                                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
-                                                    <option value="petugas" {{ $user->role === 'petugas' ? 'selected' : '' }}>Petugas</option>
-                                                    <option value="siswa" {{ $user->role === 'siswa' ? 'selected' : '' }}>Siswa</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3 nis-field" id="nisFieldEdit{{ $user->id }}" style="{{ $user->role === 'siswa' ? '' : 'display:none;' }}">
-                                                <label>NIS</label>
-                                                <input type="text" name="nis" class="form-control" value="{{ $user->nis }}">
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" name="email" id="email"
+                                                class="form-control @error('email') is-invalid @enderror" 
+                                                value="{{ old('email') }}" required>
+                                            @error('email')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input type="password" name="password" id="password"
+                                                class="form-control @error('password') is-invalid @enderror" required>
+                                            @error('password')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
+                                        <div class="mb-3">
+                                            <label for="role" class="form-label">Role</label>
+                                            <select name="role" id="role" 
+                                                class="form-select @error('role') is-invalid @enderror" required>
+                                                <option value="">Pilih Role</option>
+                                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                                <option value="petugas" {{ old('role') == 'petugas' ? 'selected' : '' }}>Petugas</option>
+                                                <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                                            </select>
+                                            @error('role')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Belum ada data pengguna.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                    </div>
+
+                    <table class="table table-bordered table-striped table-hover mt-3">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th width="50px">No</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th width="180px">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($users as $user)
+                            <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ ucfirst($user->role) }}</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="btn btn-warning btn-sm" 
+                                                data-bs-toggle="modal" data-bs-target="#modalEditUser{{ $user->id }}">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                data-bs-toggle="modal" data-bs-target="#modalHapusUser{{ $user->id }}">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Modal Edit User -->
+                            <div class="modal fade" id="modalEditUser{{ $user->id }}" tabindex="-1" aria-labelledby="modalEditUserLabel{{ $user->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditUserLabel{{ $user->id }}">Edit Data Pengguna</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('users.update', $user->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="name_edit{{ $user->id }}" class="form-label">Nama</label>
+                                                    <input type="text" name="name" id="name_edit{{ $user->id }}"
+                                                        class="form-control @error('name') is-invalid @enderror" 
+                                                        value="{{ old('name', $user->name) }}" required>
+                                                    @error('name')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="email_edit{{ $user->id }}" class="form-label">Email</label>
+                                                    <input type="email" name="email" id="email_edit{{ $user->id }}"
+                                                        class="form-control @error('email') is-invalid @enderror" 
+                                                        value="{{ old('email', $user->email) }}" required>
+                                                    @error('email')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="password_edit{{ $user->id }}" class="form-label">Password Baru</label>
+                                                    <input type="password" name="password" id="password_edit{{ $user->id }}"
+                                                        class="form-control @error('password') is-invalid @enderror">
+                                                    <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
+                                                    @error('password')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="role_edit{{ $user->id }}" class="form-label">Role</label>
+                                                    <select name="role" id="role_edit{{ $user->id }}" 
+                                                        class="form-select @error('role') is-invalid @enderror" required>
+                                                        <option value="">Pilih Role</option>
+                                                        <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                                        <option value="petugas" {{ old('role', $user->role) == 'petugas' ? 'selected' : '' }}>Petugas</option>
+                                                        <option value="siswa" {{ old('role', $user->role) == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                                                    </select>
+                                                    @error('role')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-warning">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal Hapus User -->
+                            <div class="modal fade" id="modalHapusUser{{ $user->id }}" tabindex="-1" aria-labelledby="modalHapusUserLabel{{ $user->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalHapusUserLabel{{ $user->id }}">Konfirmasi Hapus</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Apakah Anda yakin ingin menghapus pengguna <strong>"{{ $user->name }}"</strong>?</p>
+                                            <p class="text-muted">Tindakan ini tidak dapat dibatalkan.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center">Tidak ada data</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-{{-- Modal Tambah Pengguna --}}
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="POST" action="{{ route('users.store') }}">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addUserModalLabel">Tambah Pengguna Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Nama</label>
-                        <input type="text" name="name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Password (Kosongkan jika role = siswa)</label>
-                        <input type="password" name="password" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label>Role</label>
-                        <select name="role" class="form-select" id="roleSelectAdd" required>
-                            <option value="">Pilih Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="petugas">Petugas</option>
-                            <option value="siswa">Siswa</option>
-                        </select>
-                    </div>
-                    <div class="mb-3" id="nisFieldAdd" style="display: none;">
-                        <label>NIS</label>
-                        <input type="text" name="nis" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success">Simpan</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-{{-- Script: tampilkan input NIS jika role = siswa --}}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const addRoleSelect = document.getElementById('roleSelectAdd');
-    const addNisField = document.getElementById('nisFieldAdd');
-
-    addRoleSelect.addEventListener('change', function() {
-        if (this.value === 'siswa') {
-            addNisField.style.display = 'block';
-            addNisField.querySelector('input').required = true;
-        } else {
-            addNisField.style.display = 'none';
-            addNisField.querySelector('input').required = false;
-        }
-    });
-
-    // Untuk modal edit
-    document.querySelectorAll('.roleSelectEdit').forEach(select => {
-        select.addEventListener('change', function() {
-            const target = document.getElementById(this.dataset.target);
-            if (this.value === 'siswa') {
-                target.style.display = 'block';
-                target.querySelector('input').required = true;
-            } else {
-                target.style.display = 'none';
-                target.querySelector('input').required = false;
-            }
-        });
-    });
-});
-</script>
 @endsection

@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->role !== 'admin') {
+                abort(403, 'Unauthorized access.');
+            }
+            return $next($request);
+        });
+    }
+
     /**
      * Tampilkan semua pengguna.
      */
@@ -22,7 +32,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        return view('Users.create');
     }
 
     /**
@@ -34,25 +44,10 @@ class UserController extends Controller
             'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'role'  => 'required|string|in:admin,petugas,siswa',
-            'nis'   => 'nullable|string|unique:users,nis',
-            'password' => 'nullable|string|min:6', // hanya dipakai kalau bukan siswa
+            'password' => 'required|string|min:6',
         ]);
 
-        if ($validated['role'] === 'siswa') {
-            if (empty($validated['nis'])) {
-                return back()
-                    ->withErrors(['nis' => 'NIS wajib diisi untuk siswa'])
-                    ->withInput();
-            }
-            $validated['password'] = Hash::make($validated['nis']);
-        } else {
-            if (empty($validated['password'])) {
-                return back()
-                    ->withErrors(['password' => 'Password wajib diisi untuk admin/petugas'])
-                    ->withInput();
-            }
-            $validated['password'] = Hash::make($validated['password']);
-        }
+        $validated['password'] = Hash::make($validated['password']);
 
         User::create($validated);
 
@@ -66,7 +61,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('users.show', compact('user'));
+        return view('Users.show', compact('user'));
     }
 
     /**
@@ -74,7 +69,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        return view('Users.edit', compact('user'));
     }
 
     /**
@@ -86,27 +81,15 @@ class UserController extends Controller
             'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role'  => 'required|string|in:admin,petugas,siswa',
-            'nis'   => 'nullable|string|unique:users,nis,' . $user->id,
             'password' => 'nullable|string|min:6',
         ];
 
         $validated = $request->validate($rules);
 
-        if ($validated['role'] === 'siswa') {
-            if (empty($validated['nis'])) {
-                return back()
-                    ->withErrors(['nis' => 'NIS wajib diisi untuk siswa'])
-                    ->withInput();
-            }
-            if (!empty($validated['nis'])) {
-                $validated['password'] = Hash::make($validated['nis']);
-            }
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
         } else {
-            if (!empty($validated['password'])) {
-                $validated['password'] = Hash::make($validated['password']);
-            } else {
-                unset($validated['password']); // jangan update password kalau kosong
-            }
+            unset($validated['password']); // jangan update password kalau kosong
         }
 
         $user->update($validated);

@@ -1,17 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Laravel') }} - Perpustakaan Digital</title>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <!-- Google Font: Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -21,7 +21,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">
-                    {{ config('app.name', 'Home') }}
+                    Dashboard
                 </a>
 
 
@@ -30,69 +30,95 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
+                    <!-- Sisi Kiri Navbar -->
                     <ul class="navbar-nav me-auto">
                         @auth
                             @php $role = Auth::user()->role ?? null; @endphp
 
-                            {{-- For siswa: only show Peminjam and Pinjam --}}
+                            {{-- Untuk siswa: tampilkan Pinjam dan Peminjam --}}
                             @if($role === 'siswa')
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">Peminjam</a>
+                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">
+                                        Pinjam Buku
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
+                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">
+                                        Peminjam
+                                    </a>
                                 </li>
 
-                            {{-- For petugas: show everything except Pengguna Sistem --}}
+                            {{-- Untuk petugas: tampilkan semua kecuali Pengguna Sistem --}}
                             @elseif($role === 'petugas')
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="{{ route('kategoris.index') }}">Kategoris</a>
+                                    <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="{{ route('kategoris.index') }}">
+                                        Kategoris
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('book.*') ? 'active' : '' }}" href="{{ route('book.index') }}">Buku</a>
+                                    <a class="nav-link {{ request()->routeIs('book.*') ? 'active' : '' }}" href="{{ route('book.index') }}">
+                                        Buku
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">Peminjam</a>
+                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">
+                                        Peminjam
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
+                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">
+                                        Pinjam
+                                    </a>
                                 </li>
 
-                            {{-- For admin (and default): show all links --}}
+                            {{-- Untuk admin: tampilkan semua link --}}
                             @else
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="{{ route('kategoris.index') }}">Kategoris</a>
+                                    <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="{{ route('kategoris.index') }}">
+                                        Kategoris
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('book.*') ? 'active' : '' }}" href="{{ route('book.index') }}">Buku</a>
+                                    <a class="nav-link {{ request()->routeIs('book.*') ? 'active' : '' }}" href="{{ route('book.index') }}">
+                                        Buku
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">Peminjam</a>
+                                    <a class="nav-link {{ request()->routeIs('peminjam.*') ? 'active' : '' }}" href="{{ route('peminjam.index') }}">
+                                        Peminjam
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">Pinjam</a>
+                                    <a class="nav-link {{ request()->routeIs('pinjam.*') ? 'active' : '' }}" href="{{ route('pinjam.index') }}">
+                                        Pinjam
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">Pengguna Sistem</a>
+                                    <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+                                        Pengguna Sistem
+                                    </a>
                                 </li>
                             @endif
                         @endauth
                     </ul>
 
-                    <!-- Right Side Of Navbar -->
+                    <!-- Sisi Kanan Navbar -->
                     <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
+                        <!-- Link Autentikasi -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    <a class="nav-link" href="{{ route('login') }}">
+                                        {{ __('Login') }}
+                                    </a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}">
+                                        {{ __('Register') }}
+                                    </a>
                                 </li>
                             @endif
                         @else
@@ -119,12 +145,14 @@
             </div>
         </nav>
 
+        <!-- Konten Utama -->
         <main class="py-4">
             @yield('content')
         </main>
 
-        
-
     </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

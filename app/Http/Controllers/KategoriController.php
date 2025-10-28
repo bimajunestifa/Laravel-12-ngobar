@@ -8,14 +8,24 @@ use App\Http\Requests\KategoriUpdateRequest;
 
 class KategoriController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!in_array(auth()->user()->role, ['admin', 'petugas'])) {
+                abort(403, 'Unauthorized access.');
+            }
+            return $next($request);
+        });
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $kategoris = Kategori::latest()->paginate(5);
-        return view('kategoris.index', compact('kategoris'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        // $kategoris = Kategori::latest()->paginate(5);
+        // return view('kategoris.index', compact('kategoris'))
+        //     ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**

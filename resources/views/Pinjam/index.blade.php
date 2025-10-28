@@ -48,20 +48,15 @@
                                             </button>
 
                                             {{-- Tombol Hapus --}}
-                                            <form action="{{ route('pinjam.destroy', $pinjam->id) }}" 
-                                                  method="POST" 
-                                                  onsubmit="return confirm('Yakin ingin menghapus peminjaman {{ $pinjam->nama_pinjam }}?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger btn-sm" type="submit">
-                                                    <i class="bi bi-trash"></i> Hapus
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                    data-bs-toggle="modal" data-bs-target="#modalHapusPinjam{{ $pinjam->id }}">
+                                                <i class="bi bi-trash"></i> Hapus
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
 
-                                {{-- Modal Edit --}}
+                                {{-- Modal untuk Mengedit Data Peminjaman --}}
                                 <div class="modal fade" id="editPinjamModal{{ $pinjam->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <form method="POST" action="{{ route('pinjam.update', $pinjam->id) }}">
@@ -76,6 +71,22 @@
                                                     <div class="mb-3">
                                                         <label>Nama Peminjam</label>
                                                         <input type="text" name="nama_pinjam" class="form-control" value="{{ $pinjam->nama_pinjam }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Kelas</label>
+                                                        <input type="text" name="kelas" class="form-control" placeholder="Contoh: XII PPLG A">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>No HP</label>
+                                                        <input type="text" name="no_hp" class="form-control" placeholder="Contoh: 081234567890">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Jenis Kelamin</label>
+                                                        <select name="jk" class="form-control">
+                                                            <option value="">-- Pilih Jenis Kelamin --</option>
+                                                            <option value="Laki-laki">Laki-laki</option>
+                                                            <option value="Perempuan">Perempuan</option>
+                                                        </select>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label>Tanggal Pinjam</label>
@@ -114,6 +125,30 @@
                                         </form>
                                     </div>
                                 </div>
+
+                                {{-- Modal untuk Menghapus Data Peminjaman --}}
+                                <div class="modal fade" id="modalHapusPinjam{{ $pinjam->id }}" tabindex="-1" aria-labelledby="modalHapusPinjamLabel{{ $pinjam->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalHapusPinjamLabel{{ $pinjam->id }}">Konfirmasi Hapus</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Apakah Anda yakin ingin menghapus data peminjaman <strong>"{{ $pinjam->nama_pinjam }}"</strong>?</p>
+                                                <p class="text-muted">Tindakan ini tidak dapat dibatalkan.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <form action="{{ route('pinjam.destroy', $pinjam->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @empty
                                 <tr>
                                     <td colspan="7" class="text-center text-muted">Belum ada data peminjaman</td>
@@ -128,7 +163,7 @@
     </div>
 </div>
 
-{{-- Modal Tambah Peminjaman --}}
+{{-- Modal untuk Menambah Data Peminjaman Baru --}}
 <div class="modal fade" id="addPinjamModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" action="{{ route('pinjam.store') }}">
@@ -142,6 +177,22 @@
                     <div class="mb-3">
                         <label>Nama Peminjam</label>
                         <input type="text" name="nama_pinjam" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Kelas</label>
+                        <input type="text" name="kelas" class="form-control" placeholder="Contoh: XII PPLG A">
+                    </div>
+                    <div class="mb-3">
+                        <label>No HP</label>
+                        <input type="text" name="no_hp" class="form-control" placeholder="Contoh: 081234567890">
+                    </div>
+                    <div class="mb-3">
+                        <label>Jenis Kelamin</label>
+                        <select name="jk" class="form-control">
+                            <option value="">-- Pilih Jenis Kelamin --</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label>Tanggal Pinjam</label>

@@ -12,6 +12,22 @@ class Book extends Model
     protected $fillable = [
         'judul_buku',
         'penerbit',
-        'kategori',
+        'kategori_id',
     ];
+
+    /**
+     * Relasi ke Kategori - Satu buku belongs to satu kategori
+     */
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'kategori_id');
+    }
+
+    /**
+     * Relasi ke Pinjam - Satu buku bisa dipinjam berkali-kali
+     */
+    public function pinjams()
+    {
+        return $this->hasMany(Pinjam::class, 'buku_id');
+    }
 }

@@ -40,8 +40,16 @@
                         </div> --}}
 
                         <div class="mb-3">
-                            <label for="kategori" class="form-label"><strong>Kategori:</strong></label>
-                            <input type="text" class="form-control" id="kategori" name="kategori" value="{{ $books->kategori }}">
+                            <label for="kategori_id" class="form-label"><strong>Kategori:</strong></label>
+                            <select name="kategori_id" id="kategori_id" class="form-select" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach ($kategoris as $kategori)
+                                    <option value="{{ $kategori->id }}" 
+                                            {{ $books->kategori_id == $kategori->id ? 'selected' : '' }}>
+                                        {{ $kategori->kategori }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         {{-- <div class="mb-3">

@@ -66,20 +66,15 @@
 
                  <div class="mb-3">
                   <label for="kategori_id" class="form-label"><strong>Kategori:</strong></label>
-
-
-                  {{-- <select name="kategori_id" id="kategori_id" 
+                  <select name="kategori_id" id="kategori_id" 
                            class="form-select @error('kategori_id') is-invalid @enderror" required>
                      <option value="">-- Pilih Kategori --</option>
-                     @foreach ($kategori as $id => $nama)
-                           <option value="{{ $id }}">{{ $nama }}</option>
+                     @foreach ($kategoris as $kategori)
+                           <option value="{{ $kategori->id }}">{{ $kategori->kategori }}</option>
                      @endforeach
-                  </select> --}}
-                           <input type="text" name="kategori" 
-                           class="form-control @error('kategori') is-invalid @enderror" 
-                           id="kategori" placeholder="Masukkan nama kategori">
+                  </select>
 
-                    @error('kategori')
+                    @error('kategori_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                </div>

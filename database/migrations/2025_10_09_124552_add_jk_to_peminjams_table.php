@@ -9,7 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('peminjams', function (Blueprint $table) {
-            $table->enum('jk', ['Laki-laki', 'Perempuan'])->after('no_hp')->nullable();
+            if (!Schema::hasColumn('peminjams', 'jk')) {
+                $table->enum('jk', ['Laki-laki', 'Perempuan'])->after('no_hp')->nullable();
+            }
         });
     }
 

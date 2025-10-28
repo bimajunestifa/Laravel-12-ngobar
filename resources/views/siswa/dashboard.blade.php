@@ -5,71 +5,69 @@
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10 col-xl-8">
             <!-- Bagian Selamat Datang -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card border-0 shadow-sm bg-primary">
+    <div class="row mb-4">
+        <div class="col-12">
+                    <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <div class="row align-items-center">
                                 <div class="col-md-8">
-                                    <h2 class="mb-2 fw-bold text-white">
-                                        Dashboard Perpustakaan
-                                    </h2>
-                                    <p class="mb-0 text-white-50">
-                                        Selamat datang, <span class="fw-semibold text-white">{{ Auth::user()->name }}</span>
-                                        @if(Auth::user()->role)
-                                            <span class="badge bg-white text-primary ms-2">{{ ucfirst(Auth::user()->role) }}</span>
-                                        @endif
+                                    <h2 class="mb-2 text-primary fw-bold">
+                        Dashboard Siswa
+                    </h2>
+                                    <p class="mb-0 text-muted">
+                                        Selamat datang, <span class="fw-semibold text-dark">{{ Auth::user()->name }}</span>
+                                        <span class="badge bg-primary-subtle text-primary ms-2">Siswa</span>
                                     </p>
                                 </div>
                                 <div class="col-md-4 text-end">
-                                    <div class="text-white-50">
+                                    <div class="text-muted">
                                         <div class="mb-1 fw-medium">
                                             <span id="current-date"></span>
                                         </div>
-                                        <div class="fs-5 fw-semibold text-white">
+                                        <div class="fs-5 fw-semibold text-dark">
                                             <span id="current-time"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            @if (session('status'))
+    @if (session('status'))
                 <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <strong>Berhasil!</strong> {{ session('status') }}
-                </div>
-            @endif
+        </div>
+    @endif
 
             <!-- Kartu Statistik -->
             <div class="row g-3 mb-4">
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-4 col-6">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="bg-primary-subtle rounded-3 p-3">
-                                        <div class="text-primary fs-4 fw-bold">{{ $totalBooks }}</div>
+                                        <div class="text-primary fs-4 fw-bold">{{ $myLoans->count() }}</div>
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <div class="text-muted small">Koleksi Buku</div>
+                                    <div class="text-muted small">Total Peminjaman</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-4 col-6">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="bg-success-subtle rounded-3 p-3">
-                                        <div class="text-success fs-4 fw-bold">{{ $activeLoans }}</div>
+                                        <div class="text-success fs-4 fw-bold">{{ $activeLoans->count() }}</div>
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -80,40 +78,23 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-4 col-6">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="bg-warning-subtle rounded-3 p-3">
-                                        <div class="text-warning fs-4 fw-bold">{{ $overdueLoans }}</div>
-                                    </div>
-                                </div>
+                                        <div class="text-warning fs-4 fw-bold">{{ $overdueLoans->count() }}</div>
+            </div>
+        </div>
                                 <div class="flex-grow-1 ms-3">
                                     <div class="text-muted small">Buku Terlambat</div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-6">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <div class="bg-info-subtle rounded-3 p-3">
-                                        <div class="text-info fs-4 fw-bold">{{ $totalBorrowers }}</div>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <div class="text-muted small">Anggota Aktif</div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
             <!-- Aksi Cepat -->
             <div class="row mb-4">
@@ -124,28 +105,16 @@
                         </div>
                         <div class="card-body p-4">
                             <div class="row g-3">
-                                <div class="col-md-3 col-6">
-                                    <a href="{{ route('book.index') }}" class="btn btn-outline-primary btn-lg w-100 py-3">
-                                        Kelola Buku
+                                <div class="col-md-6 col-12">
+                                    <a href="{{ route('pinjam.index') }}" class="btn btn-outline-primary btn-lg w-100 py-3">
+                                        Pinjam Buku
                                     </a>
                                 </div>
-                                <div class="col-md-3 col-6">
+                                <div class="col-md-6 col-12">
                                     <a href="{{ route('pinjam.index') }}" class="btn btn-outline-success btn-lg w-100 py-3">
-                                        Peminjaman
+                                        Lihat Riwayat
                                     </a>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <a href="{{ route('peminjam.index') }}" class="btn btn-outline-info btn-lg w-100 py-3">
-                                        Data Peminjam
-                                    </a>
-                                </div>
-                                @if(Auth::user()->role === 'admin')
-                                <div class="col-md-3 col-6">
-                                    <a href="{{ route('users.index') }}" class="btn btn-outline-warning btn-lg w-100 py-3">
-                                        Pengguna
-                                    </a>
-                                </div>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -159,59 +128,105 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-header bg-transparent border-0 p-4 pb-0">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="card-title text-primary fw-bold mb-0">Peminjaman Aktif</h3>
+                                <h3 class="card-title text-primary fw-bold mb-0">Buku yang Sedang Saya Pinjam</h3>
                                 <a href="{{ route('pinjam.index') }}" class="btn btn-primary">
-                                    Tambah
+                                    Pinjam Buku
                                 </a>
-                            </div>
-                        </div>
+        </div>
+    </div>
                         <div class="card-body p-4">
-                            @if($borrowedBooks->count() > 0)
-                                <div class="table-responsive">
+                    @if($activeLoans->count() > 0)
+                        <div class="table-responsive">
                                     <table class="table table-hover mb-0">
-                                        <thead>
+                                <thead>
                                             <tr class="border-0">
-                                                <th class="text-muted small fw-semibold text-uppercase">Peminjam</th>
-                                                <th class="text-muted small fw-semibold text-uppercase">Buku</th>
-                                                <th class="text-muted small fw-semibold text-uppercase">Pinjam</th>
-                                                <th class="text-muted small fw-semibold text-uppercase">Kembali</th>
+                                                <th class="text-muted small fw-semibold text-uppercase">Judul Buku</th>
+                                                <th class="text-muted small fw-semibold text-uppercase">Tanggal Pinjam</th>
+                                                <th class="text-muted small fw-semibold text-uppercase">Tanggal Kembali</th>
+                                                <th class="text-muted small fw-semibold text-uppercase">Petugas</th>
                                                 <th class="text-muted small fw-semibold text-uppercase">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($borrowedBooks as $loan)
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($activeLoans as $loan)
                                                 <tr class="border-0">
-                                                    <td>
-                                                        <div class="fw-semibold text-dark">{{ $loan->nama_pinjam }}</div>
-                                                        <small class="text-muted">{{ $loan->petugas }}</small>
-                                                    </td>
                                                     <td class="text-dark">{{ $loan->judul_buku }}</td>
                                                     <td class="text-muted">{{ \Carbon\Carbon::parse($loan->tgl_pinjam)->format('d/m/Y') }}</td>
                                                     <td class="text-muted">{{ \Carbon\Carbon::parse($loan->tgl_kembali)->format('d/m/Y') }}</td>
-                                                    <td>
-                                                        @if(\Carbon\Carbon::parse($loan->tgl_kembali)->isPast())
+                                                    <td class="text-muted">{{ $loan->petugas }}</td>
+                                            <td>
+                                                @if(\Carbon\Carbon::parse($loan->tgl_kembali)->isPast())
                                                             <span class="badge bg-danger-subtle text-danger">Terlambat</span>
-                                                        @else
+                                                @else
                                                             <span class="badge bg-success-subtle text-success">Aktif</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @else
-                                <div class="text-center py-5">
-                                    <p class="text-muted mb-3">Tidak ada peminjaman aktif</p>
-                                    <a href="{{ route('pinjam.index') }}" class="btn btn-primary">
-                                        Tambah Peminjaman
-                                    </a>
-                                </div>
-                            @endif
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
+                    @else
+                                <div class="text-center py-5">
+                                    <p class="text-muted mb-3">Anda belum meminjam buku</p>
+                                    <a href="{{ route('pinjam.index') }}" class="btn btn-primary">
+                                        Pinjam Buku Sekarang
+                                    </a>
+                        </div>
+                    @endif
+                        </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Riwayat Peminjaman -->
+            @if($myLoans->count() > 0)
+            <div class="row g-4 mt-2">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-transparent border-0 p-4 pb-0">
+                            <h3 class="card-title text-primary fw-bold mb-0">Riwayat Peminjaman</h3>
+                </div>
+                        <div class="card-body p-4">
+                            <div class="d-flex flex-column gap-3">
+                            @foreach($myLoans->take(5) as $loan)
+                                    <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-primary-subtle rounded-circle p-2">
+                                                <div class="text-primary small fw-bold">P</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-semibold text-dark mb-1">{{ $loan->judul_buku }}</div>
+                                            <div class="text-muted small mb-1">
+                                            {{ \Carbon\Carbon::parse($loan->tgl_pinjam)->format('d/m/Y') }}
+                                                @if($loan->tgl_kembali)
+                                                    - {{ \Carbon\Carbon::parse($loan->tgl_kembali)->format('d/m/Y') }}
+                                                @endif
+                                            </div>
+                                            <div class="text-muted small">
+                                        @if($loan->tgl_kembali)
+                                                    <span class="badge bg-success-subtle text-success">Sudah dikembalikan</span>
+                                        @else
+                                                    <span class="badge bg-warning-subtle text-warning">Masih dipinjam</span>
+                                        @endif
+                                            </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            </div>
+                        </div>
+                        @if($myLoans->count() > 5)
+                        <div class="card-footer bg-transparent border-0 p-4 pt-0 text-center">
+                            <a href="{{ route('pinjam.index') }}" class="btn btn-outline-primary">
+                                Lihat Semua Riwayat
+                            </a>
+                        </div>
+                    @endif
                     </div>
                 </div>
-
+            </div>
+            @endif
         </div>
     </div>
 </div>

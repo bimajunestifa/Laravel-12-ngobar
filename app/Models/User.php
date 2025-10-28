@@ -42,4 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Relasi ke Pinjam - Satu user bisa menangani banyak peminjaman
+     */
+    public function pinjams()
+    {
+        return $this->hasMany(Pinjam::class, 'petugas_id');
+    }
 }

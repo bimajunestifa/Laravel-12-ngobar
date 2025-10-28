@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pinjam;
 use App\Models\Book;
 use App\Models\User;
+use App\Models\Peminjam;
 use Illuminate\Http\Request;
 
 class PinjamController extends Controller
@@ -19,7 +20,9 @@ class PinjamController extends Controller
 
     public function create()
     {
-        return view('Pinjam.create');
+        $buku = Book::all();
+        $users = User::where('role', 'admin')->orWhere('role', 'petugas')->get();
+        return view('Pinjam.create', compact('buku', 'users'));
     }
 
     public function store(Request $request)
@@ -30,7 +33,23 @@ class PinjamController extends Controller
             'tgl_kembali' => 'required|date',
             'buku_id' => 'required|exists:books,id',
             'petugas_id' => 'required|exists:users,id',
+            'kelas' => 'nullable|string|max:255',
+            'no_hp' => 'nullable|string|max:20',
+            'jk' => 'nullable|string|max:20',
         ]);
+        
+        // Cek apakah peminjam sudah ada di database
+        $peminjam = Peminjam::where('nama', $validated['nama_pinjam'])->first();
+        
+        // Jika belum ada, buat data peminjam baru
+        if (!$peminjam) {
+            $peminjam = Peminjam::create([
+                'nama' => $validated['nama_pinjam'],
+                'kelas' => $validated['kelas'] ?? 'Belum Diketahui',
+                'no_hp' => $validated['no_hp'] ?? '-',
+                'jk' => $validated['jk'] ?? 'Belum Diketahui',
+            ]);
+        }
         
         // Ambil data buku dan petugas
         $buku = Book::findOrFail($request->buku_id);
@@ -43,6 +62,8 @@ class PinjamController extends Controller
             'tgl_kembali' => $validated['tgl_kembali'],
             'judul_buku' => $buku->judul_buku,
             'petugas' => $petugas->name,
+            'buku_id' => $validated['buku_id'],
+            'petugas_id' => $validated['petugas_id'],
         ]);
 
         return redirect()->route('pinjam.index')->with('success', 'Data pinjam berhasil ditambahkan');
@@ -57,7 +78,9 @@ class PinjamController extends Controller
     public function edit($id)
     {
         $pinjam = Pinjam::findOrFail($id);
-        return view('Pinjam.edit', compact('pinjam'));
+        $buku = Book::all();
+        $users = User::where('role', 'admin')->orWhere('role', 'petugas')->get();
+        return view('Pinjam.edit', compact('pinjam', 'buku', 'users'));
     }
 
     public function update(Request $request, $id)
@@ -70,7 +93,23 @@ class PinjamController extends Controller
             'tgl_kembali' => 'required|date',
             'buku_id' => 'required|exists:books,id',
             'petugas_id' => 'required|exists:users,id',
+            'kelas' => 'nullable|string|max:255',
+            'no_hp' => 'nullable|string|max:20',
+            'jk' => 'nullable|string|max:20',
         ]);
+
+        // Cek apakah peminjam sudah ada di database
+        $peminjam = Peminjam::where('nama', $validated['nama_pinjam'])->first();
+        
+        // Jika belum ada, buat data peminjam baru
+        if (!$peminjam) {
+            $peminjam = Peminjam::create([
+                'nama' => $validated['nama_pinjam'],
+                'kelas' => $validated['kelas'] ?? 'Belum Diketahui',
+                'no_hp' => $validated['no_hp'] ?? '-',
+                'jk' => $validated['jk'] ?? 'Belum Diketahui',
+            ]);
+        }
 
         // Ambil data buku dan petugas
         $buku = Book::findOrFail($request->buku_id);
@@ -83,6 +122,8 @@ class PinjamController extends Controller
             'tgl_kembali' => $validated['tgl_kembali'],
             'judul_buku' => $buku->judul_buku,
             'petugas' => $petugas->name,
+            'buku_id' => $validated['buku_id'],
+            'petugas_id' => $validated['petugas_id'],
         ]);
 
         return redirect()->route('pinjam.index')->with('success', 'Data pinjam berhasil diupdate');
