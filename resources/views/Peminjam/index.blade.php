@@ -66,8 +66,10 @@
                                 <th width="50px">No</th>
                                 <th>Nama Lengkap</th>
                                 <th>Kelas</th>
+                                <!-- <th>Rombel</th> -->
                                 <th>No HP</th>
                                 <th>Jenis Kelamin</th>
+                                <th>Status</th>
                                 <th width="180px">Aksi</th>
                             </tr>
                         </thead>
@@ -77,18 +79,22 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $peminjam->nama }}</td>
                                 <td>{{ $peminjam->kelas }}</td>
+                                <!-- <td>{{ $peminjam->rombel ?? '-' }}</td> -->
                                 <td>{{ $peminjam->no_hp }}</td>
                                 <td>{{ $peminjam->jk }}</td>
+                                <td>
+                                    @if(($peminjam->status ?? 'aktif') === 'aktif')
+                                        <span class="badge bg-success">Aktif</span>
+                                    @else
+                                        <span class="badge bg-secondary">Non-aktif</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     @if(Auth::user()->role !== 'siswa')
                                         <div class="d-flex justify-content-center gap-2">
                                             <button type="button" class="btn btn-warning btn-sm" 
                                                     data-bs-toggle="modal" data-bs-target="#modalEditPeminjam{{ $peminjam->id }}">
                                                 Edit
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" 
-                                                    data-bs-toggle="modal" data-bs-target="#modalHapusPeminjam{{ $peminjam->id }}">
-                                                Hapus
                                             </button>
                                         </div>
                                     @else
@@ -159,29 +165,7 @@
                                 </div>
                             </div>
 
-                            <!-- Modal Hapus Peminjam -->
-                            <div class="modal fade" id="modalHapusPeminjam{{ $peminjam->id }}" tabindex="-1" aria-labelledby="modalHapusPeminjamLabel{{ $peminjam->id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modalHapusPeminjamLabel{{ $peminjam->id }}">Konfirmasi Hapus</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Apakah Anda yakin ingin menghapus peminjam <strong>"{{ $peminjam->nama }}"</strong>?</p>
-                                            <p class="text-muted">Tindakan ini tidak dapat dibatalkan.</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <form action="{{ route('peminjam.destroy', $peminjam->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Ya, Hapus</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             @endif
                             @empty
                             <tr>

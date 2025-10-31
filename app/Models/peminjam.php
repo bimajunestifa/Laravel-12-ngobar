@@ -14,7 +14,9 @@ class Peminjam extends Model
     protected $fillable = [
         'nama',
         'kelas',
+        // 'rombel',
         'no_hp',
         'jk',
+        'status',
     ];
 }

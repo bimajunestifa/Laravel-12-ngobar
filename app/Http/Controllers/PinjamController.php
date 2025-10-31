@@ -29,7 +29,7 @@ class PinjamController extends Controller
     {
         $validated = $request->validate([
             'nama_pinjam' => 'required',
-            'tgl_pinjam' => 'required|date',
+            'tgl_pinjam' => 'nullable|date',
             'tgl_kembali' => 'required|date',
             'buku_id' => 'required|exists:books,id',
             'petugas_id' => 'required|exists:users,id',
@@ -37,6 +37,9 @@ class PinjamController extends Controller
             'no_hp' => 'nullable|string|max:20',
             'jk' => 'nullable|string|max:20',
         ]);
+        if (empty($validated['tgl_pinjam'])) {
+            $validated['tgl_pinjam'] = now();
+        }
         
         // Cek apakah peminjam sudah ada di database
         $peminjam = Peminjam::where('nama', $validated['nama_pinjam'])->first();
@@ -89,7 +92,7 @@ class PinjamController extends Controller
 
         $validated = $request->validate([
             'nama_pinjam' => 'required',
-            'tgl_pinjam' => 'required|date',
+            'tgl_pinjam' => 'nullable|date',
             'tgl_kembali' => 'required|date',
             'buku_id' => 'required|exists:books,id',
             'petugas_id' => 'required|exists:users,id',
@@ -97,6 +100,9 @@ class PinjamController extends Controller
             'no_hp' => 'nullable|string|max:20',
             'jk' => 'nullable|string|max:20',
         ]);
+        if (empty($validated['tgl_pinjam'])) {
+            $validated['tgl_pinjam'] = now();
+        }
 
         // Cek apakah peminjam sudah ada di database
         $peminjam = Peminjam::where('nama', $validated['nama_pinjam'])->first();

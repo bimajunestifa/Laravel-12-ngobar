@@ -55,7 +55,7 @@ class BookController extends Controller
     {
         $books = Book::find($id);
         $validated = $request->validate([
-            'judul_buku' => 'required|string|max:255',
+            'judul_buku' => 'required|string|max:255|unique:books,judul_buku,' . $id,
             'penerbit' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategoris,id',
         ]);
@@ -75,7 +75,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul_buku' => 'required|string|max:255',
+            'judul_buku' => 'required|string|max:255|unique:books,judul_buku',
             'penerbit' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategoris,id',
         ]);

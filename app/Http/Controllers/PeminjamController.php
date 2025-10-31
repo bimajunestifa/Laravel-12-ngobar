@@ -30,16 +30,20 @@ class PeminjamController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
+            // 'rombel' => 'nullable|string|max:100',
             'no_hp' => 'required|string|max:20',
             'jk' => 'required|string|max:20',
+            'status' => 'required|in:aktif,non-aktif',
         ]);
 
         // simpan data
         Peminjam::create([
             'nama' => $request->nama,
             'kelas' => $request->kelas,
+            // 'rombel' => $request->rombel,
             'no_hp' => $request->no_hp,
             'jk' => $request->jk,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('peminjam.index')->with('success', 'Data peminjam berhasil disimpan!');
@@ -58,15 +62,19 @@ class PeminjamController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
+            // 'rombel' => 'nullable|string|max:100',
             'no_hp' => 'required|string|max:20',
             'jk' => 'required|string|max:20',
+            'status' => 'required|in:aktif,non-aktif',
         ]);
 
         $peminjam->update([
             'nama' => $request->nama,
             'kelas' => $request->kelas,
+            // 'rombel' => $request->rombel,
             'no_hp' => $request->no_hp,
             'jk' => $request->jk,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('peminjam.index')->with('success', 'Data peminjam berhasil diupdate!');
